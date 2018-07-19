@@ -1,15 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
+import { Http } from "../../../node_modules/@angular/http";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: "app-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
-
-  constructor() { }
+  registerMode = false;
+  values: any;
+  constructor(private http: Http) {}
 
   ngOnInit() {
   }
 
+  registerToggle() {
+    this.registerMode = true;
+  }
+
+
+
+
+  cancelRegisterMode(registerMode: boolean) {
+    this.registerMode = registerMode;
+  }
 }

@@ -1,3 +1,18 @@
-<p>
-  home works!
-</p>
+<div *ngIf="!registerMode" style="text-align: center">
+  <h1>
+    Find ur match!
+  </h1>
+  <p class="lead"> Come on in the view ur matches..All you need is register </p>
+
+  <div class="text-center">
+    <button class="btn btn-primary btn-lg" (click)="registerToggle()">Register</button>
+    <button class="btn btn-info btn-lg">Learn More</button>
+  </div>
+</div>
+<div>
+  <div *ngIf="registerMode" class='container'>
+    <div class="col-md-4 col-md-offset-4">
+      <app-register  (cancelRegister)="cancelRegisterMode($event)"></app-register>
+    </div>
+  </div>
+</div>
