@@ -10,6 +10,7 @@ import { AlertfyService } from "../_services/alertfy.service";
 export class RegisterComponent implements OnInit {
   model: any = {};
 
+  // emmits event
   @Output() cancelRegister = new EventEmitter();
 
   constructor(
@@ -22,18 +23,17 @@ export class RegisterComponent implements OnInit {
 
   register() {
     this.authService.register(this.model).subscribe(
-
       () => {
-        this.alert.success("Registration succesfull");
+        this.alert.success("Registrered succesfuly");
       },
       error => {
-        console.log(error);
+        this.alert.error(error);
       }
     );
   }
 
   cancel() {
     this.cancelRegister.emit(false);
-    this.alert.warning("cancelled");
+    this.alert.warning("Cancelled");
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import * as alertify from "alertifyjs";
-declare let alertify: any;
+import * as Alertfy from "alertifyjs";
+declare let alertify: Alertfy;
 
 @Injectable()
 export class AlertfyService {
@@ -23,7 +23,7 @@ export class AlertfyService {
   }
 
   warning(message: string) {
-    alertify.alert(message);
+    alertify.warning(message);
   }
 
   message(message: string) {

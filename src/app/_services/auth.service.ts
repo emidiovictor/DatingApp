@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { JwtHelperService } from "@auth0/angular-jwt";
 import {
   Http,
   RequestOptions,
@@ -7,66 +8,46 @@ import {
 } from "../../../node_modules/@angular/http";
 import { map, catchError } from "rxjs/operators";
 import { throwError } from "../../../node_modules/rxjs";
+import {
+  HttpClient,
+  HttpHeaders
+} from "../../../node_modules/@angular/common/http";
 
 @Injectable()
 export class AuthService {
+  constructor(private http: HttpClient) {}
+  httpOptions = {
+    headers: new HttpHeaders({
+      "Content-Type": "application/json"
+    })
+  };
+
   baseUrl: "http://localhost:57329/api/auth";
-  constructor(private http: Http) {}
   userToken: any;
+  jwtHelper = new JwtHelperService();
+  decodedToken: any;
 
   login(model: any) {
-    return this.http
-      .post(
-        "http://localhost:57329/api/auth/login",
-        model,
-        this.requestOptions()
-      )
-      .pipe(
-        map((reponse: Response) => {
-          const user = reponse.json();
-          if (user) {
-            localStorage.setItem("token", user.tokenString);
-            this.userToken = user.tokenString;
-          }
-        }),
-        catchError(this.handleError)
-      );
+    return this.http.post("http://localhost:57329/api/auth/login", model, this.httpOptions).pipe(
+      map((response: any) => {
+        const user = response;
+        if (user) {
+          localStorage.setItem("token", user.tokenString);
+          this.decodedToken = this.jwtHelper.decodeToken(user.tokenString);
+          console.log(this.decodedToken);
+        }
+      })
+    );
   }
 
   register(model: any) {
-    return this.http
-      .post(
-        "http://localhost:57329/api/auth/register",
-        model,
-        this.requestOptions()
-      )
-      .pipe(
-        map((response: Response) => {
-          return true;
-        }),
-        catchError(this.handleError)
-      );
+    return this.http.post("http://localhost:57329/api/auth/register", model);
   }
 
-  private requestOptions() {
-    const headers = new Headers({ "Content-type": "application/json" });
-    return new RequestOptions({ headers: headers });
-  }
 
-  private handleError(error: Response) {
-    const applicationError = error.headers.get("Application-Error");
-    if (applicationError) {
-      return throwError(applicationError);
-    }
-    const serverError = error.json();
-    let modelStateErrors = "";
-    if (serverError) {
-      for (const key in serverError) {
-        if (serverError[key]) {
-          modelStateErrors += serverError[key] + "\n";
-        }
-      }
-    }
-    return throwError(modelStateErrors);
+
+  loggedIn() {
+    const token = localStorage.getItem("token");
+    return !this.jwtHelper.isTokenExpired(token);
   }
 }
